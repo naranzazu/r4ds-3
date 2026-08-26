@@ -63,6 +63,10 @@ ggplot(rla_2023, aes(x = rla_score)) +
 ```
 
 ```{r}
+con_atus <- dbConnect(duckdb(), "data/atus.duckdb", read_only = TRUE)
+```
+
+```{r}
 score_change_plot <- score_change |>
   mutate(
     rla_change = score_change,
@@ -132,5 +136,91 @@ ggplot(state_arrow_data, aes(y = state_name)) +
     y = NULL,
     color = "Change direction",
     caption = "Source: SEDA 2025 state_scores table"
+  )
+```
+
+```{r}
+dbplyr_act   <- tbl(con_atus, "activities")
+dbplyr_resp  <- tbl(con_atus, "respondents")
+dbplyr_codes <- tbl(con_atus, "activity_codes")
+person_activity_minutes <- dbplyr_resp |>
+  filter(
+    day_type == "Weekday",
+    employment_status == "Not in labor force"
+  ) |>
+  inner_join(dbplyr_act, by = "tucaseid") |>
+  inner_join(
+    dbplyr_codes |>
+      select(activity_code, major_name),
+    by = "activity_code"
+  ) |>
+  group_by(tucaseid, sex, major_name) |>
+  summarise(minutes = sum(duration_min, na.rm = TRUE)) |>
+  collect()
+activity_avg <- person_activity_minutes |>
+  group_by(sex, major_name) |>
+  summarise(mean_minutes = mean(minutes)) |>
+  arrange(sex, major_name)
+print(activity_avg)
+```
+
+```{r}
+keep_cats <- c(
+  "Personal Care Activities",
+  "Household Activities",
+  "Caring For & Helping Household (HH) Members",
+  "Socializing, Relaxing, and Leisure"
+)
+
+hourly_avg <- dbplyr_act |>
+  mutate(hour = start_hhmm %/% 100L) |>
+  filter(hour >= 6L, hour <= 23L) |>
+  left_join(dbplyr_codes |> select(activity_code, major_name),
+            by = "activity_code") |>
+  filter(major_name %in% keep_cats) |>
+  inner_join(dbplyr_resp |>
+               filter(str_starts(employment_status, "Not"),
+                      day_type == "Weekday") |>
+               select(tucaseid, sex),
+             by = "tucaseid") |>
+  group_by(sex, hour, major_name) |>
+  summarise(avg_min = mean(duration_min, na.rm = TRUE), .groups = "drop") |>
+  collect()
+print(hourly_avg)
+```
+
+```{r}
+activity_avg_plot <- activity_avg |>
+  filter(major_name != "Data Codes") |>
+  mutate(major_name = fct_reorder(major_name, mean_minutes, .fun = mean))
+
+ggplot(activity_avg_plot, aes(x = major_name, y = mean_minutes, fill = sex)) +
+  geom_col(position = "dodge") +
+  coord_flip() +
+  labs(
+    title = "Average Daily Minutes by Major Activity Category",
+    subtitle = "Weekday respondents not in the labor force, by sex",
+    x = "Major activity category",
+    y = "Average daily minutes",
+    fill = "Sex",
+    caption = "Source: American Time Use Survey (ATUS)"
+  )
+```
+
+```{r}
+ggplot(hourly_avg, aes(x = hour, y = avg_min, fill = major_name)) +
+  geom_area() +
+  facet_wrap(~sex) +
+  scale_x_continuous(
+    breaks = seq(6, 23, by = 3),
+    labels = function(hours) sprintf("%02d:00", hours)
+  ) +
+  labs(
+    title = "How the Day Fills Up",
+    subtitle = "Average minutes spent in activities starting each hour, by sex",
+    x = "Hour of day",
+    y = "Average minutes",
+    fill = "Major activity category",
+    caption = "Source: American Time Use Survey (ATUS)"
   )
 ```

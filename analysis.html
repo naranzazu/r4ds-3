@@ -79,7 +79,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell">
 <div class="cell-output cell-output-stderr">
 <pre><code>duckdb keeps downloaded extensions and secrets in a temporary directory:
-ℹ /tmp/Rtmp4GypWG/duckdb
+ℹ /tmp/RtmpMJP8rN/duckdb
 This is removed when the R session ends.
 • Extensions are re-downloaded each session.
 • Secrets are lost.
@@ -98,10 +98,22 @@ This is removed when the R session ends.
 </div>
 </div>
 <div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>duckdb keeps downloaded extensions and secrets in a temporary directory:
+ℹ /tmp/RtmpMJP8rN/duckdb
+This is removed when the R session ends.
+• Extensions are re-downloaded each session.
+• Secrets are lost.
+ℹ Run duckdb(shared_home = TRUE) (or create ~/.duckdb) to keep them (suitable for most users).
+ℹ Run duckdb(shared_home = FALSE) to accept the temporary directory (and silence this message).
+ℹ See ?duckdb_storage for details and alternatives.</code></pre>
+</div>
+</div>
+<div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="analysis_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="analysis_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -128,7 +140,68 @@ This is removed when the R session ends.
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="analysis_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="analysis_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>! Grouped output by "tucaseid" and "sex".
+ℹ Override behaviour and silence this message with the `.groups` argument.
+ℹ Or use `.by` instead of `group_by()`.
+`summarise()` has regrouped the output.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 36 × 3
+# Groups:   sex [2]
+   sex    major_name                                        mean_minutes
+   &lt;chr&gt;  &lt;chr&gt;                                                    &lt;dbl&gt;
+ 1 Female Caring For &amp; Helping Household (HH) Members              167. 
+ 2 Female Caring For &amp; Helping Nonhousehold (NonHH) Members         94.2
+ 3 Female Consumer Purchases                                        65.3
+ 4 Female Data Codes                                                82.6
+ 5 Female Eating and Drinking                                       69.6
+ 6 Female Education                                                366. 
+ 7 Female Government Services &amp; Civic Obligations                   53.3
+ 8 Female Household Activities                                     198. 
+ 9 Female Household Services                                        45.9
+10 Female Personal Care Activities                                 594. 
+# ℹ 26 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 144 × 4
+   sex     hour major_name                         avg_min
+   &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;                                &lt;dbl&gt;
+ 1 Female    14 Socializing, Relaxing, and Leisure    92.1
+ 2 Female    16 Personal Care Activities              54.1
+ 3 Female    18 Socializing, Relaxing, and Leisure   110. 
+ 4 Female    19 Socializing, Relaxing, and Leisure   105. 
+ 5 Female    23 Personal Care Activities             220. 
+ 6 Female     8 Household Activities                  49.3
+ 7 Female     9 Socializing, Relaxing, and Leisure    96.0
+ 8 Female    19 Household Activities                  31.7
+ 9 Female    22 Personal Care Activities             242. 
+10 Female     7 Socializing, Relaxing, and Leisure    81.3
+# ℹ 134 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
